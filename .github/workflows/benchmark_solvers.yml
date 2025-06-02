@@ -1,0 +1,72 @@
+name: Benchmark several DFO solvers on MATLAB
+
+on:
+  push:
+    branches: main
+
+jobs:
+  run:
+    name: Run benchmarks on MATLAB
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        matlab: [latest]
+        with_optim_toolbox: [yes]
+
+    steps:
+
+      - name: Checkout OptiProfiler
+        uses: actions/checkout@v4
+        with:
+          repository: optiprofiler/optiprofiler
+          path: optiprofiler
+          submodules: recursive
+
+      - name: Checkout PRIMA
+        uses: actions/checkout@v4
+        with:
+          repository: libprima/prima
+          path: prima
+          submodules: recursive
+
+      - name: Set up MATLAB with optimization toolbox
+        if: ${{ matrix.with_optim_toolbox == 'yes' }}
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: ${{ matrix.matlab }}
+          products: Optimization_Toolbox Parallel_Computing_Toolbox
+
+      - name: Setup OptiProfiler and run tests
+        uses: matlab-actions/run-command@v2.1.1
+        with:
+          command: |
+            % Setup OptiProfiler
+            cd optiprofiler
+            setup
+            help benchmark
+
+            % Setup PRIMA
+            cd ../prima
+            setup
+            help prima
+
+            % Run benchmarks
+            cd ..
+            mkdir results
+            cd results
+            solvers = {@newuoa, @fminsearch, @fminunc};
+            options.solver_names = {'newuoa', 'simplex', 'BFGS'};
+            options.plibs = {'s2mpj', 'matcutest'};
+            options.ptype = 'u';
+            options.maxdim = 2;
+            options.max_eval_factor = 10;
+            benchmark(solvers, options);
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark_results
+          path: results/out/
