@@ -72,4 +72,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: benchmark_results
-          path: results/out/${{matrix.feature_name }}/
+          path: results/out/
