@@ -61,8 +61,19 @@ jobs:
             options.solver_names = {'newuoa', 'simplex', 'BFGS'};
             options.plibs = {'s2mpj', 'matcutest'};
             options.ptype = 'u';
-            options.maxdim = 2;
+            options.maxdim = 50;
             options.max_eval_factor = 10;
+
+            benchmark(solvers, options);
+            options.feature_name = 'noisy';
+            benchmark(solvers, options);
+            options.feature_name = 'perturbed_x0';
+            benchmark(solvers, options);
+            options.feature_name = 'truncated';
+            benchmark(solvers, options);
+            options.feature_name = 'linearly_transformed';
+            benchmark(solvers, options);
+            options.feature_name = 'random_nan';
             benchmark(solvers, options);
 
       - name: Upload artifacts
