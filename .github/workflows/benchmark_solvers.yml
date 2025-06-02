@@ -63,7 +63,7 @@ jobs:
             options.plibs = {'s2mpj', 'matcutest'};
             options.ptype = 'u';
             options.maxdim = 50;
-            options.max_eval_factor = 20;
+            options.max_eval_factor = 200;
             options.feature_name = '${{ matrix.feature_name }}';
             options.benchmark_id = '${{ matrix.feature_name }}';
             benchmark(solvers, options);
