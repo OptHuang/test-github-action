@@ -62,8 +62,8 @@ jobs:
             options.solver_names = {'newuoa', 'simplex', 'BFGS'};
             options.plibs = {'s2mpj', 'matcutest'};
             options.ptype = 'u';
-            options.maxdim = 50;
-            options.max_eval_factor = 200;
+            options.maxdim = 20;
+            options.max_eval_factor = 10;
             options.feature_name = '${{ matrix.feature_name }}';
             options.benchmark_id = '${{ matrix.feature_name }}';
             benchmark(solvers, options);
@@ -71,5 +71,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark_results
+          name: ${{ matrix.feature_name }}
           path: results/${{ matrix.feature_name }}/
