@@ -62,8 +62,8 @@ jobs:
             options.solver_names = {'newuoa', 'simplex', 'BFGS'};
             options.plibs = {'s2mpj', 'matcutest'};
             options.ptype = 'u';
-            options.maxdim = 20;
-            options.max_eval_factor = 10;
+            options.maxdim = 50;
+            options.max_eval_factor = 100;
             options.feature_name = '${{ matrix.feature_name }}';
             options.benchmark_id = '${{ matrix.feature_name }}';
             benchmark(solvers, options);
