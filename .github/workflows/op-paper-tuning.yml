@@ -54,7 +54,7 @@ jobs:
             help prima
 
             % Run benchmarks
-            cd experiments
+            cd ../experiments
             hp_tuning
 
       - name: Upload artifacts
