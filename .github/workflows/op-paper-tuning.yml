@@ -1,0 +1,64 @@
+name: OP paper tuning experiments
+
+on:
+  push:
+    branches: main
+
+jobs:
+  run:
+    name: OP paper tuning experiments
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout OptiProfiler
+        uses: actions/checkout@v4
+        with:
+          repository: optiprofiler/optiprofiler
+          path: optiprofiler
+          submodules: recursive
+
+      - name: Checkout PRIMA
+        uses: actions/checkout@v4
+        with:
+          repository: libprima/prima
+          path: prima
+          submodules: recursive
+
+      - name: Set up MATLAB with optimization toolbox
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: latest
+          products: Optimization_Toolbox Parallel_Computing_Toolbox
+
+      - name: Setup OptiProfiler and run tests
+        uses: matlab-actions/run-command@v2.1.1
+        with:
+          command: |
+            % Setup OptiProfiler
+            cd optiprofiler
+            setup
+            help benchmark
+
+            % Setup PRIMA
+            cd ../prima
+            setup
+            help prima
+
+            % Run benchmarks
+            cd experiments
+            hp_tuning
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: results
+          path: experiments/results
