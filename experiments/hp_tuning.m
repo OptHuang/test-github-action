@@ -25,6 +25,7 @@ function hp_tuning()
     save('hp_tuning/results.mat', 'x', 'fx', 'exitflag', 'output');
 
     % Benchmark tuned PDS with the default PDS
+    cd hp_tuning;
     theta = 2^x(1);
     gamma = 2^x(2);
     solvers = cell(1, 2);
@@ -33,10 +34,10 @@ function hp_tuning()
     options.ptype = 'u';
     options.maxdim = 5;
     options.solver_names = {'Default', 'Tuned'};
-    options.benchmark_id = 'hp_tuning';
-    options.feature_stamp = 'final';
     benchmark(solvers, options)
-    system('cp hp_tuning/final/detailed_profiles/perf_history-based/*_4.pdf hp_tuning/archives/tuning.pdf');
+    cd ..;
+    mkdir archives;
+    system('cp hp_tuning/out/*/detailed_profiles/perf_history-based/*_4.pdf hp_tuning/archives/tuning.pdf');
 end
 
 function f = tuning_loss(x)
